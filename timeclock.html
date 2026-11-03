@@ -531,7 +531,7 @@ V.mytime=function(){var L=RECS[U.key];return '<div class="pbody">'+demobar()+
  '<div class="hint" style="text-align:center">Travel time is added by dispatch after you submit.</div></div>'+foot('<button class="btn primary" id="newts">+ New time sheet</button>');};
 V[1]=function(){return '<div class="pbody">'+stepbar(1,'Job &amp; clock in')+
  '<div class="pcard" style="padding:10px 13px"><div class="row"><span class="avatar" style="width:34px;height:34px">'+U.ini+'</span><div><b>'+U.name+'</b> <span class="muted small">#'+U.emp+'</span><div class="small muted">'+U.role+' · home terminal '+U.term+'</div></div></div></div>'+
- fld('job','Rig Move / Job #',1,sel('job',JOBS,S.job,'Select an assigned job'))+
+ fld('job','Rig Move / Job #',1,sel('job',JOBS,S.job,'Select an assigned job').replace('</select>','<option disabled>24135 · Rig 31 — Scheduled (not clockable)</option></select>')+'<div class="hint" style="font-size:12px;color:#666;margin-top:4px">Only In Progress jobs can be clocked into. Scheduled jobs must be marked In Progress by the office first.</div>')+
  (U.op?fld('eq','Equipment you\'re running today',1,eqSel()):'')+
  fld('date','Date Worked',1,'<input type="date" id="date" value="'+S.date+'" max="'+today()+'">')+
  fld('term','Terminal',1,sel('term',TERMS,S.term,'Select terminal'))+(U.op?'':linked())+
