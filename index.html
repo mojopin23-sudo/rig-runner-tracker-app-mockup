@@ -130,7 +130,7 @@ function sheet(html){const m=document.createElement('div');m.className='modal';m
 function closeSheet(){const m=$('modal');if(m)m.remove()}
 
 const R={};
-R.home=()=>{hdr();const T=[["My Jobs","Assigned jobs, maps & directions","jobs","📋",1],["Time Clock","Clock in & out","tc","⏱",0],["Waybills","Rig move, standalone, log-only","wb","🚚",0],["Job Update","Quick status to the job activity","update","💬",0],["Good Catch / Near Miss","Report what you saw","gc","⚠️",1],["Inspections","Crane, forklift, truck dailies","insp","🔧",0],["Daily Safety Rig Move Report","Per job, per day","dsr","🦺",0],["Forms","JSA, route survey, permits…","forms","📝",0],["Company Documents","Policies & manuals","docs","📁",0]];
+R.home=()=>{hdr();const T=[["My Jobs","Assigned jobs, maps & directions","jobs","📋",1],["Time Clock","Clock in & out","tc","⏱",0],["Waybills","Rig move, standalone, log-only","wb","🚚",0],["Job Update","Quick status to the job activity","update","💬",0],["Good Catch / Near Miss","Report what you saw","gc","⚠️",1],["Inspections","Crane, forklift, truck dailies","insp","🔧",0],["Forms","JSA, route survey, permits…","forms","📝",0],["Company Documents","Policies & manuals","docs","📁",0]];
 return '<div class="card" style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-weight:700;font-size:16px">Hi, '+ME.name.split(' ')[0]+'</div><div style="color:var(--grey);font-size:12.5px">'+ME.pos+' · '+ME.term+'</div></div>'+(S.clock?'<span class="gps"><i></i>On the clock</span>':'<span class="pill">Off the clock</span>')+'</div><div class="tiles">'+T.map(t=>'<button class="tile'+(t[4]?' red':'')+'" data-tile="'+t[2]+'" onclick="go(\''+t[2]+'\')"><span class="ico">'+t[3]+'</span><span class="nm">'+t[0]+'</span><span class="ds">'+t[1]+'</span></button>').join('')+'</div>';};
 
 R.jobs=()=>{hdr('My Jobs');return '<div class="ph-h">Assigned to you</div><div class="list">'+JOBS.map(j=>li('#'+j.id+' · '+j.title,CUSTS[j.cust].n+' · '+j.date+' <span class="pill b">'+j.status+'</span>','job/'+j.id)).join('')+'</div>';};
@@ -216,14 +216,6 @@ function inspR(k){return ()=>{hdr(INSP[k]);return fld('Unit',sel('iu',INSPU[k]),
 '<button class="btn primary bigbtn" id="submit" onclick="const d=document.querySelectorAll(\'#chk .d.on\').length;doneMsg(\'Inspection submitted\',d?d+\' defect(s) found · Maintenance request created automatically\':\'All items passed\')">Submit Inspection</button>';}}
 Object.keys(INSP).forEach(k=>R['insp-'+k]=inspR(k));
 function pd(b,i,d){const p=b.parentNode;p.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');$('defn').classList.toggle('hidden',!document.querySelector('#chk .d.on'))}
-
-/* ---- DSR ---- */
-R.dsr=()=>{hdr('Daily Safety Report');const sec=t=>'<div class="ph-h">'+t+'</div>';return '<div class="tip">One report per job, per day.</div>'+fld('Job',sel('dj',JOBS.map(j=>'#'+j.id+' · '+j.title)),1)+fld('Date',inp('dd',today(),'date'),1)+
-sec('Pre-job safety meeting')+'<div class="card">'+['Safety meeting held','JSA reviewed & signed','Stop Work Authority discussed','Emergency plan / muster point reviewed'].map(x=>'<label class="chk ci"><input type="checkbox">'+x+'</label>').join('')+'</div>'+fld('Topics discussed',ta('dt'))+
-sec('Crew & equipment')+'<div class="row2">'+fld('Crew on site',inp('dc','8','number'))+fld('Units on site',inp('du','6','number'))+'</div>'+
-sec('Hazards & conditions')+fld('Weather',sel('dw',['Clear','Rain','Wind > 25 mph','Heat advisory','Fog']))+fld('Hazards identified',ta('dh'))+
-sec('Incidents')+'<div class="seg"><button class="on">None</button><button>Near miss</button><button>First aid</button><button>Recordable</button></div>'+fld('Notes',ta('dn'))+photo('dph')+sig('ds1','Supervisor signature')+
-'<div class="note">Placeholder sections — final layout to match current report.</div><button class="btn primary bigbtn" id="submit" onclick="doneMsg(\'Daily Safety Report submitted\',\'Filed to the job for today.\')">Submit Report</button>';};
 
 /* ---- Forms & docs ---- */
 R.forms=()=>{hdr('Forms');return '<div class="list">'+FORMS.map(f=>li('📝 '+f[0],'',f[1])).join('')+'</div>';};
