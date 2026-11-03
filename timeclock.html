@@ -509,8 +509,8 @@ function tick(){$('#clk').textContent=fmtT(Date.now()).replace(/ [AP]M/,'');}
 function f1(n){return (Math.round(n*100)/100).toFixed(2).replace(/0$/,'')}
 function hrsOf(r){var c=r.cin&&r.cin.t?r.cin.t:r.cin,o=r.cout&&r.cout.t?r.cout.t:r.cout;if(!c||!o||o<=c)return null;var el=(o-c)/36e5;return {el:el,h:Math.max(0,el-(r.lunch?.5:0))};}
 function T(x){return x&&x.t?x.t:x}
-function top(){var back=(step===1||step==='rec')?'mytime':(step===2||step===3)?step-1:(step==='corr'?'rec':null);
- $('#top').innerHTML='<div class="ptop">'+(back!=null?'<a class="pback" id="tb">‹</a><span class="ptitle">'+({1:'Rig Move Time Sheet',2:'Rig Move Time Sheet',3:'Rig Move Time Sheet',rec:'Time Record',corr:'Request Correction'}[step])+'</span>':'<a class="pback" id="tcback" href="index.html#home">‹</a><span class="ptitle">Time Clock</span><span class="brand" style="display:none"><img src="'+LOGO+'" alt="Rig Runner"><span class="divider"></span><span class="appname">Tracker</span></span>')+'<span class="spacer"></span>'+'<a class="pback" id="apphome" href="index.html#home" title="App home" style="width:auto;padding:0 10px;font-size:13px;text-decoration:none">⌂ Home</a>'+'</div>';
+function top(){var back=(step===1||step==='rec'||step==='to')?'mytime':(step===2||step===3)?step-1:(step==='corr'?'rec':null);
+ $('#top').innerHTML='<div class="ptop">'+(back!=null?'<a class="pback" id="tb">‹</a><span class="ptitle">'+({1:'Rig Move Time Sheet',2:'Rig Move Time Sheet',3:'Rig Move Time Sheet',rec:'Time Record',corr:'Request Correction',to:'Request Time Off'}[step])+'</span>':'<a class="pback" id="tcback" href="index.html#home">‹</a><span class="ptitle">Time Clock</span><span class="brand" style="display:none"><img src="'+LOGO+'" alt="Rig Runner"><span class="divider"></span><span class="appname">Tracker</span></span>')+'<span class="spacer"></span>'+'<a class="pback" id="apphome" href="index.html#home" title="App home" style="width:auto;padding:0 10px;font-size:13px;text-decoration:none">⌂ Home</a>'+'</div>';
  var b=$('#tb');if(b)b.onclick=function(){go(back)};}
 function demobar(){return '<div class="demobar"><div class="k">Demo user</div><div class="seg"><a data-user="op" class="'+(U.key==='op'?'active':'')+'">Marco Salinas<br><small>crane operator · no leased vehicle</small></a><a data-user="drv" class="'+(U.key==='drv'?'active':'')+'">Dale Whitaker<br><small>truck driver · linked truck/trailer</small></a></div></div>';}
 function fld(id,label,req,inner){return '<div class="pfield'+(errs[id]?' invalid':'')+'" id="f-'+id+'"><label>'+label+(req?'<span class="req">*</span>':'')+'</label>'+inner+'<div class="err">'+(errs[id]||'')+'</div></div>';}
@@ -528,7 +528,17 @@ var V={};
 V.mytime=function(){var L=RECS[U.key];return '<div class="pbody">'+demobar()+
  '<div class="row"><div><div style="font-size:20px;font-weight:800">My Time</div><div class="small muted">'+U.name+' · #'+U.emp+' · '+U.role+'</div></div><span class="spacer"></span><span class="avatar">'+U.ini+'</span></div>'+
  L.map(function(r,i){var h=hrsOf(r);return '<a class="pcard rec'+(r.status==='Mileage due'?' hl':'')+'" data-rec="'+i+'"><div class="row"><b>'+fmtD(r.date).replace(/, \d{4}$/,'')+'</b><span class="spacer"></span>'+stat(r.status)+'</div><div class="small" style="margin-top:5px">'+r.job+' · '+fmtT(r.cin)+' – '+fmtT(r.cout)+'</div><div class="small muted">'+(h?f1(h.h):'—')+' hrs · Per Diem requested: '+r.perDiem+(U.leased?(r.odoOut?' · '+(r.odoOut-r.odoIn)+' mi':' · ending mileage due'):'')+'</div></a>';}).join('')+
- '<div class="hint" style="text-align:center">Travel time is added by dispatch after you submit.</div></div>'+foot('<button class="btn primary" id="newts">+ New time sheet</button>');};
+ '<div class="hint" style="text-align:center">Travel time is added by dispatch after you submit.</div></div>'+foot('<button class="btn ghost" id="totime">🏖 Request Time Off</button><button class="btn primary" id="newts">+ New time sheet</button>');};
+var TOT=['PTO','Vacation','Sick','FMLA'];
+function toKey(){var n=U.name.split(' ');return n[n.length-1]+', '+n[0];}
+function toAll(){var a;try{a=JSON.parse(localStorage.rrTimeOff||'null')}catch(e){}if(!a){a=[{id:'TO-26-0041',emp:'Pruitt, Dale',term:'335',type:'Vacation',start:'2026-11-07',end:'2026-11-10',note:'Family trip (sample)',status:'Pending',sub:'2026-11-02'}];localStorage.rrTimeOff=JSON.stringify(a)}return a;}
+function toPill(st){return '<span class="pill '+({Pending:'Pending',Approved:'Approved',Denied:'Corr'}[st])+'">'+st+'</span>';}
+V.to=function(){var mine=toAll().filter(function(r){return r.emp===toKey()});return '<div class="pbody">'+
+ '<div class="small muted">'+U.name+' · #'+U.emp+' · '+U.term+'</div>'+
+ fld('totype','Type',1,sel('totype',TOT,'','Select type'))+fld('tostart','Start date',1,'<input type="date" id="tostart">')+fld('toend','End date',1,'<input type="date" id="toend">')+fld('tonote','Note',0,'<textarea id="tonote" rows="2" placeholder="Optional"></textarea>')+
+ '<div class="tip">Goes to management for approval. When approved, the days show on the office Daily Log right away.</div>'+
+ '<div style="font-weight:800;margin:14px 0 6px">My requests</div>'+(mine.length?mine.slice().reverse().map(function(r){return '<div class="pcard"><div class="row"><b>'+r.type+'</b><span class="spacer"></span>'+toPill(r.status)+'</div><div class="small" style="margin-top:4px">'+fmtD(r.start).replace(/, \d{4}$/,'')+' – '+fmtD(r.end)+'</div><div class="small muted">'+r.id+(r.note?' · '+esc(r.note):'')+'</div></div>'}).join(''):'<div class="hint">No requests yet.</div>')+
+ '</div>'+foot('<button class="btn ghost" id="tocancel">Cancel</button><button class="btn primary" id="tosend">Submit request</button>');};
 V[1]=function(){return '<div class="pbody">'+stepbar(1,'Job &amp; clock in')+
  '<div class="pcard" style="padding:10px 13px"><div class="row"><span class="avatar" style="width:34px;height:34px">'+U.ini+'</span><div><b>'+U.name+'</b> <span class="muted small">#'+U.emp+'</span><div class="small muted">'+U.role+' · home terminal '+U.term+'</div></div></div></div>'+
  fld('job','Rig Move / Job #',1,sel('job',JOBS,S.job,'Select an assigned job').replace('</select>','<option disabled>24135 · Rig 31 — Scheduled (not clockable)</option></select>')+'<div class="hint" style="font-size:12px;color:#666;margin-top:4px">Only In Progress jobs can be clocked into. Scheduled jobs must be marked In Progress by the office first.</div>')+
@@ -582,6 +592,10 @@ function saveMile(r){var v=($('#odoOut').value||'').trim(),e=$('#mileerr');
  if(+v<+r.odoIn){e.textContent='Ending odometer can’t be lower than the start ('+r.odoIn+').';return;}
  r.odoOut=v;if(r.status==='Mileage due')r.status='Pending approval';mileEdit=false;render();toast('Ending mileage saved · '+(v-r.odoIn)+' mi');}
 function wire(){
+ on('totime','click',function(){go('to')});on('tocancel','click',function(){go('mytime')});
+ on('tosend','click',function(){var t=$('#totype').value,a=$('#tostart').value,b=$('#toend').value,n=$('#tonote').value.trim();errs={};if(!t)errs.totype='Pick a type';if(!a)errs.tostart='Pick a start date';if(!b)errs.toend='Pick an end date';else if(a&&b<a)errs.toend='End must be on or after start';
+  if(Object.keys(errs).length){var keep=[t,a,b,n];render();$('#totype').value=keep[0];$('#tostart').value=keep[1];$('#toend').value=keep[2];$('#tonote').value=keep[3];toast('Fix the highlighted fields');return}
+  var all=toAll(),id='TO-26-'+String(42+all.length).padStart(4,'0');all.push({id:id,emp:toKey(),term:U.term.slice(0,3),type:t,start:a,end:b,note:n,status:'Pending',sub:today()});localStorage.rrTimeOff=JSON.stringify(all);render();toast('Request sent · Pending');});
  document.querySelectorAll('[data-user]').forEach(function(a){a.onclick=function(){U=USERS[a.dataset.user];S=blank();go('mytime');toast('Demo user: '+U.name);};});
  on('enable','click',function(){var b=this;b.textContent='Requesting location…';b.disabled=true;setTimeout(function(){loc=true;go('mytime');},700);});
  document.querySelectorAll('[data-rec]').forEach(function(a){a.onclick=function(){cur=+a.dataset.rec;go('rec');};});
