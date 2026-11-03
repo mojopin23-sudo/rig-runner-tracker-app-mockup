@@ -123,6 +123,10 @@ const sig=(id,l)=>fld(l,'<canvas class="sig" id="'+id+'" width="600" height="220
 const job=id=>JOBS.find(j=>j.id==id)||JOBS[0];
 const li=(t,s,h,right)=>'<button class="li" onclick="go(\''+h+'\')"><div><div class="t">'+t+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div><span class="chev">'+(right||'›')+'</span></button>';
 const submit=(lbl,msg,extra)=>'<button class="btn primary bigbtn" onclick="doneMsg(\''+esc(msg).replace(/'/g,"\\'")+'\''+(extra?','+extra:'')+')">'+lbl+'</button>';
+function rpBtns(){if(!/inspection|JSA/i.test(DONE.m))return '';var k=/JSA/i.test(DONE.m)?'JSA':'Inspection';return '<div style="display:flex;gap:8px;margin:0 0 10px"><button class="btn bigbtn" id="rppdf" style="flex:1" onclick="rpPdf()">📄 PDF</button><button class="btn bigbtn" id="rpmail" style="flex:1" onclick="rpMail()">✉ Email</button></div><div id="rpmsg" style="text-align:center;color:var(--grey);font-size:13px;margin-bottom:10px"></div>';}
+function rpKind(){return /JSA/i.test(DONE.m)?'JSA':'Inspection'}
+function rpPdf(){document.getElementById('rpmsg').textContent='📄 PDF created: '+rpKind()+'-sample.pdf (demo)'}
+function rpMail(){var t=prompt('Email this '+(rpKind()=='JSA'?'JSA':'inspection record')+' to:','safety@sampledrilling.example');if(t)document.getElementById('rpmsg').textContent='✉ Emailed to '+t+' with '+rpKind()+'-sample.pdf attached (demo)'}
 function doneMsg(m,sub){DONE={m,sub:sub||''};go('done')}
 let DONE={m:'Submitted',sub:''};
 function map(id,p,label){return '<div class="map" id="'+id+'" style="cursor:default"><div class="pin" style="left:50%;top:50%"></div><div class="lbl">'+label+'</div></div>';}
@@ -153,7 +157,7 @@ R.doc=n=>{n=decodeURIComponent(n||'Document');hdr(n);return '<div class="card" s
 /* ---- Time Clock (from the time keeping mockup) ---- */
 let TICK=null;
 function fmtEl(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s/60)%60).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-R.tc=()=>{location.href='timeclock.html?v=8';return '<div class="tip">Opening Time Clock…</div>';};
+R.tc=()=>{location.href='timeclock.html?v=9';return '<div class="tip">Opening Time Clock…</div>';};
 function clockIn(){const v=$('tcjob').value.match(/#(\d+)/)[1],j=job(v);S.clock={t:Date.now(),at:now(),job:v,eq:S.eq.t};render()}
 function clockOut(){const c=S.clock,j=job(c.job);S.lastShift=c.at+' – '+now()+(c.eq?' · '+EQUIP.trucks[0].split(' ')[0]+' clocked out with you':'');S.clock=null;clearInterval(TICK);render()}
 
@@ -233,7 +237,7 @@ R.forms=()=>{hdr('Forms');return '<div class="list">'+FORMS.map(f=>li('📝 '+f[
 R.form=n=>{n=decodeURIComponent(n);hdr(n);return '<div class="note">Placeholder fields for '+esc(n)+'.</div>'+fld('Job',sel('fj',['— None —'].concat(JOBS.map(j=>'#'+j.id+' · '+j.title))))+fld('Date',inp('fd',today(),'date'),1)+fld('Prepared by',inp('fp',ME.name),1)+fld('Details',ta('fdt'),1)+photo('fph')+sig('fs1','Signature')+
 '<button class="btn primary bigbtn" id="submit" onclick="doneMsg(\''+esc(n)+' submitted\',\'Saved to your submissions.\')">Submit</button>';};
 R.docs=()=>{hdr('Company Documents');return '<div class="tip">What you see here depends on your access level. Some documents are only visible to supervisors or managers.</div><div class="list">'+DOCS.map(d=>li('📁 '+d[0],'Visible to: '+d[1],'doc/'+encodeURIComponent(d[0]))).join('')+'</div>';};
-R.done=()=>{hdr('Submitted');return '<div class="done"><div class="chkc">✓</div><h2>'+esc(DONE.m)+'</h2><div style="color:var(--grey)">'+esc(DONE.sub)+'</div></div><button class="btn primary bigbtn" id="home" onclick="go(\'home\')">Back to Home</button><button class="btn bigbtn" onclick="back()">Back</button>';};
+R.done=()=>{hdr('Submitted');return '<div class="done"><div class="chkc">✓</div><h2>'+esc(DONE.m)+'</h2><div style="color:var(--grey)">'+esc(DONE.sub)+'</div></div>'+rpBtns()+'<button class="btn primary bigbtn" id="home" onclick="go(\'home\')">Back to Home</button><button class="btn bigbtn" onclick="back()">Back</button>';};
 
 function render(){closeSheet();const h=(location.hash.slice(1)||'home');const [r,...a]=h.split('/');const f=R[r]||R.home;$('body').innerHTML=f(a.join('/'));$('body').scrollTop=0;initSigs();segInit();}
 function track(){const h=location.hash.slice(1)||'home';if(!BACKING){if(h==='home')STK=['home'];else STK.push(h)}BACKING=false}
