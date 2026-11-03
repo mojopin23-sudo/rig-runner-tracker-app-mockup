@@ -97,6 +97,7 @@ JOBS.push(
 {id:"24142",cust:0,rig:"Rig 9",title:"Rig 9 Move – Smith Co.",date:"2026-11-16",status:"Pending",old:"Bullard 7-1H, Smith Co.",new:"Whitehouse 3-2H, Smith Co.",oldDir:"From Kilgore TX-31 W to US-69 S, right on CR 178, 1 mi to pad.",newDir:"From Whitehouse FM 346 E 3 mi, left at lease sign WH-3.",oldPin:[40,45],newPin:[60,20],end:"2026-11-18",ppl:[["Cody Tremont","Truck Driver","(903) 555-0171"],["Grady Moss","Truck Pusher","(903) 555-0172"],["Nina Carver","Forklift Operator","(903) 555-0173"],["Eli Barnes","Safety Driver","(903) 555-0174"]],truck:1,trailer:2});
 const JX={"24117":["Rig 14 – Full Move","Hackrock Operating","Full Rig Move","Hackberry 22-1H"],"24121":["Rig 7 – Partial Move","Frio Basin Oil","Partial Move","Big Wells 4-2H"],"24130":["Rig 22 – Full Move","Permian Ridge E&P","Full Rig Move","Notrees 2-7H"],"24138":["Rig 31 – Skid & Move","Cost Creek Energy","Skid / Walk","Cost Creek 1-3H"],"24142":["Rig 9 – Full Move","Piney Woods Petroleum","Full Rig Move","Whitehouse 3-2H"]};
 JOBS.forEach(j=>{const x=JX[j.id];j.job=x[0];j.op=x[1];j.mt=x[2];j.lease=x[3];j.eq=[EQUIP.trucks[j.truck],EQUIP.trailers[j.trailer],"C-301 Grove RT760E","F-210 Cat TL943"];j.docs=["Move Plan – "+j.rig,"Pad Layout – "+x[3],"Customer Safety Orientation","Lease Road Restrictions"];});
+JOBS.forEach(j=>{const ll=p=>(28.40+p[1]/100).toFixed(6)+', '+(-98.90+p[0]/100).toFixed(6);j.oldLL=ll(j.oldPin);j.newLL=ll(j.newPin);});
 const mdy=d=>{const[a,b,c]=d.split('-');return b+'-'+c+'-'+a};
 const RES_UNUSED=["Rig 14 Load List (PDF)","Pad Layout – Hackberry 22-1H","Lease Road Restrictions","Customer Safety Orientation","Site-Specific Emergency Plan"];
 const LOADS=["Substructure – Center","Substructure – Left Wing","Mast / Derrick","Drawworks Skid","Mud Pump #1","Mud Pump #2","Generator House","Mud Tank – Shaker","Pipe Tubs","Water Tank","Doghouse","BOP / Accumulator","Choke Manifold","Fuel Tank"];
@@ -124,8 +125,7 @@ const li=(t,s,h,right)=>'<button class="li" onclick="go(\''+h+'\')"><div><div cl
 const submit=(lbl,msg,extra)=>'<button class="btn primary bigbtn" onclick="doneMsg(\''+esc(msg).replace(/'/g,"\\'")+'\''+(extra?','+extra:'')+')">'+lbl+'</button>';
 function doneMsg(m,sub){DONE={m,sub:sub||''};go('done')}
 let DONE={m:'Submitted',sub:''};
-function map(id,p,label){return '<div class="map" id="'+id+'" onclick="dropPin(event,\''+id+'\')"><div class="pin" style="left:'+p[0]+'%;top:'+p[1]+'%"></div><div class="lbl">'+label+' · tap to move pin</div></div>';}
-function dropPin(e,id){const m=$(id),r=m.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*100,y=(e.clientY-r.top)/r.height*100;const p=m.querySelector('.pin');p.style.left=x+'%';p.style.top=y+'%';m.querySelector('.lbl').textContent='Pin dropped · 28.'+(9000+Math.round(x*9))+', -97.'+(8000+Math.round(y*9));}
+function map(id,p,label){return '<div class="map" id="'+id+'" style="cursor:default"><div class="pin" style="left:50%;top:50%"></div><div class="lbl">'+label+'</div></div>';}
 function clrSig(id){const c=$(id);c.getContext('2d').clearRect(0,0,c.width,c.height)}
 function initSigs(){document.querySelectorAll('canvas.sig').forEach(c=>{const x=c.getContext('2d');x.lineWidth=4;x.lineCap='round';x.strokeStyle='#1b3f73';let d=false;
 const pt=e=>{const r=c.getBoundingClientRect();return[(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]};
@@ -143,9 +143,9 @@ const kv=(l,v)=>'<div class="kv"><span>'+l+'</span><b>'+esc(v)+'</b></div>';
 const kvl=(l,v,h)=>'<div class="kv" style="cursor:pointer" onclick="go(\''+h+'\')"><span>'+l+'</span><b>'+esc(v)+' <span style="color:var(--grey)">›</span></b></div>';
 R.job=id=>{const j=job(id);hdr('#'+j.id+' - '+j.rig);return '<div class="card">'+kv('Job',j.job)+kv('Job Number',j.id)+kv('Job Status',j.status.toLowerCase())+'</div>'+
 '<div class="ph-h">Customer Info</div><div class="card">'+kv('Customer',CUSTS[j.cust].n)+kv('Operator',j.op)+'</div>'+
-'<div class="ph-h">Transportation</div><div class="card">'+kv('Rig',j.rig)+kv('Move Type',j.mt)+kv('Lease/Well',j.lease)+kvl('Old End',j.old,'end/'+j.id+'/old')+kvl('New End',j.new,'end/'+j.id+'/new')+'</div>'+
+'<div class="ph-h">Transportation</div><div class="card">'+kv('Rig',j.rig)+kv('Move Type',j.mt)+kv('Lease/Well',j.lease)+kvl('Old End',j.old,'end/'+j.id+'/old')+kv('Old End Lat/Long',j.oldLL)+kvl('New End',j.new,'end/'+j.id+'/new')+kv('New End Lat/Long',j.newLL)+'</div>'+
 '<div class="list">'+li('Resources','','res/'+j.id)+li('Documents','','jdocs/'+j.id)+'</div>';};
-R.end=a=>{const[id,w]=a.split('/'),j=job(id),o=w=='old';hdr('Map/Directions');const p=o?j.oldPin:j.newPin;return '<div class="card">'+map('m1',p,(o?'Old End':'New End'))+'<div style="margin-top:8px;font-weight:700">'+esc(j.job)+'</div><div style="font-size:13px">'+esc(o?j.old:j.new)+' · 28.'+(9000+p[0]*9)+', -98.'+(5000+p[1]*9)+'</div></div><div class="ph-h">Directions</div><div class="card" style="font-size:14px;line-height:1.45">'+esc(o?j.oldDir:j.newDir)+'</div>';};
+R.end=a=>{const[id,w]=a.split('/'),j=job(id),o=w=='old';hdr('Map/Directions');const p=o?j.oldPin:j.newPin;return '<div class="card">'+map('m1',p,(o?'Old End':'New End'))+'<div style="margin-top:8px;font-weight:700">'+esc(j.job)+'</div><div style="font-size:13px">'+esc(o?j.old:j.new)+'<br>Pin: '+(o?j.oldLL:j.newLL)+'</div></div><div class="ph-h">Directions</div><div class="card" style="font-size:14px;line-height:1.45">'+esc(o?j.oldDir:j.newDir)+'</div>';};
 R.res=id=>{const j=job(id);hdr('#'+j.id+' - '+j.rig);return '<div class="ph-h">Personnel</div><div class="list">'+j.ppl.map(p=>'<a class="li" href="tel:'+p[2].replace(/\D/g,'')+'"><div><div class="t">'+p[0]+'</div><div class="s">'+p[1]+' · '+p[2]+'</div></div><span class="chev">📞</span></a>').join('')+'</div><div class="ph-h">Equipment</div><div class="card">'+j.eq.map(e=>'<div class="kv"><span>'+esc(e)+'</span><b><span class="pill g">Assigned</span></b></div>').join('')+'</div><div class="note">Sample names and numbers only.</div>';};
 R.jdocs=id=>{const j=job(id);hdr('Documents');return '<div class="list">'+j.docs.map(d=>li('📄 '+d,'','doc/'+encodeURIComponent(d))).join('')+'</div>';};
 R.doc=n=>{n=decodeURIComponent(n||'Document');hdr(n);return '<div class="card" style="min-height:320px"><div style="font-weight:700;margin-bottom:10px">'+esc(n)+'</div>'+'<div style="height:10px;background:#eee;margin:8px 0;border-radius:4px"></div>'.repeat(12)+'<div class="h" style="color:var(--grey);font-size:12px">Document preview placeholder</div></div><button class="btn bigbtn" onclick="back()">Done</button>';};
@@ -153,13 +153,7 @@ R.doc=n=>{n=decodeURIComponent(n||'Document');hdr(n);return '<div class="card" s
 /* ---- Time Clock (from the time keeping mockup) ---- */
 let TICK=null;
 function fmtEl(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/3600)).padStart(2,'0')+':'+String(Math.floor(s/60)%60).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
-R.tc=()=>{hdr('Time Clock');const c=S.clock;
-setTimeout(()=>{clearInterval(TICK);if(S.clock)TICK=setInterval(()=>{const b=$('el');if(b)b.textContent=fmtEl(Date.now()-S.clock.t)},1000)},0);
-return '<div class="card clock"><div class="st'+(c?'':' off')+'">'+(c?'On the clock':'Off the clock')+'</div><div class="big" id="el">'+(c?fmtEl(Date.now()-c.t):'00:00:00')+'</div><div class="since">'+(c?'Since '+c.at+' · Job #'+c.job:'Not clocked in')+'</div></div>'+
-(c?'':fld('Job',sel('tcjob',JOBS.map(j=>'#'+j.id+' · '+j.title)),1))+
-'<div class="card"><label class="chk"><input type="checkbox" id="eqt" '+(S.eq.t?'checked':'')+' onchange="S.eq.t=this.checked"'+(c?' disabled':'')+'><b>Clock into your linked equipment</b></label><div class="ci" style="margin-top:6px"><span class="n">'+EQUIP.trucks[0]+'<div style="font-size:12px;color:var(--grey)">Your linked unit</div></span><span class="pill '+(c&&c.eq?'g':'')+'">'+(c&&c.eq?'Clocked in':'Idle')+'</span></div></div>'+
-(c?'<button class="btn primary bigbtn" id="tcbtn" onclick="clockOut()">Clock Out</button>':'<button class="btn green bigbtn" id="tcbtn" onclick="clockIn()">Clock In</button>')+
-(S.lastShift?'<div class="ok">Last shift: '+S.lastShift+'</div>':'');};
+R.tc=()=>{location.href='timeclock.html';return '<div class="tip">Opening Time Clock…</div>';};
 function clockIn(){const v=$('tcjob').value.match(/#(\d+)/)[1],j=job(v);S.clock={t:Date.now(),at:now(),job:v,eq:S.eq.t};render()}
 function clockOut(){const c=S.clock,j=job(c.job);S.lastShift=c.at+' – '+now()+(c.eq?' · '+EQUIP.trucks[0].split(' ')[0]+' clocked out with you':'');S.clock=null;clearInterval(TICK);render()}
 
