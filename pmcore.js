@@ -6,7 +6,7 @@ var PM={KEY:KEY,esc:esc};
 PM.UNITS=[["T-308-14","2019 Kenworth","308"],["C-308-02","2016 Grove","308"],["T-331-07","2021 Peterbilt","331"],["T-331-11","2018 Mack","331"],["T-335-03","2020 Kenworth","335"],["C-335-01","2017 Link-Belt","335"],["T-346-05","2022 Peterbilt","346"],["T-346-09","2015 Freightliner","346"],["F-308-04","2020 Sellick","308"],["P-331-02","2019 Kenworth","331"],["W-335-06","2018 Peterbilt","335"],["C-346-01","2021 Grove","346"]];
 PM.TERMS={'308':'308 Alice','331':'331 Jourdanton','335':'335 Odessa','346':'346 Kilgore'};
 PM.TIRES=[];for(var t=11;t<=17;t+=0.5)PM.TIRES.push(t+' in');
-PM.sample=function(){return {id:'PR-26-2001',link:'job:214',linkLabel:'Job #214 · Sample Rig 27',jobTitle:'Sample Rig 27',unit:'T-335-03',unitLabel:'T-335-03 · 2020 Kenworth · 335 Odessa',name:'Wade Callister',title:'Driver',reqDate:'2026-10-27',load:'Substructure box',len:'68 ft',wid:'14 ft 6 in',hgt:'15 ft 2 in',ohf:'0 ft',ohr:'6 ft',axTractor:'3',axTrailer:'3',steerTire:'12.5 in',notes:'Daylight travel only.',date:'2026-10-27'}};
+PM.sample=function(){return {id:'PR-26-2001',link:'job:214',linkLabel:'Job #214 · Sample Rig 27',jobTitle:'Sample Rig 27',unit:'T-331-07',unitLabel:'T-331-07 · 2021 Peterbilt · 331 Jourdanton',name:'Dale Pruitt',title:'Driver',reqDate:'2026-10-27',load:'Substructure box',len:'68 ft',wid:'14 ft 6 in',hgt:'15 ft 2 in',ohf:'0 ft',ohr:'6 ft',axTractor:'3',axTrailer:'3',steerTire:'12.5 in',notes:'Daylight travel only.',date:'2026-10-27'}};
 PM.all=function(){var a;try{a=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}if(!a){a=[PM.sample()];localStorage.setItem(KEY,JSON.stringify(a))}return a};
 PM.save=function(a){localStorage.setItem(KEY,JSON.stringify(a))};
 PM.get=function(id){return PM.all().find(function(x){return x.id===id})};
@@ -25,13 +25,13 @@ PM.formHTML=function(o){var r=o.rec||{};
  '<div class="rs-sec"><h4>Link to</h4><div class="rs-grid">'+sel('link','Job '+R,o.jobs.map(function(j){return [j.v,j.t]}),o.pre||'','Select a job…','full')+'<label class="rs-f rs-full"><span>Job title</span><input name="jobTitle" readonly value="'+esc(r.jobTitle||'')+'" placeholder="Fills in from the job"></label>'+sel('unit','Unit (truck / equipment) '+R,PM.UNITS.map(function(u){return [u[0],PM.unitLabel(u[0])]}),o.unit||r.unit||'','Select a unit…','full')+'</div><div class="rs-note">The permit request shows on the job record and on the unit\'s equipment record.</div></div>'+
  '<div class="rs-sec"><h4>Requested by</h4><div class="rs-grid">'+sel('name','Name '+R,o.people.map(function(p){return p[0]}),r.name||'','Select a person…')+inp('title','Title',r.title)+inp('reqDate','Date requested '+R,r.reqDate||o.today,'date')+'</div></div>'+
  '<div class="rs-sec"><h4>Load</h4><div class="rs-grid">'+inp('load','Load description',r.load,'text','full')+inp('len','Length',r.len)+inp('wid','Width',r.wid)+inp('hgt','Height',r.hgt)+inp('ohf','Front overhang',r.ohf)+inp('ohr','Rear overhang',r.ohr)+'</div></div>'+
- '<div class="rs-sec"><h4>Axles &amp; tires</h4><div class="rs-grid">'+inp('axTractor','Number of axles - Tractor',r.axTractor,'number')+inp('axTrailer','Number of axles - Trailer',r.axTrailer,'number')+sel('steerTire','Steer tire size (inches)',PM.TIRES,r.steerTire||'','Select size…')+'</div></div>'+
+ '<div class="rs-sec"><h4>Axles &amp; Tires</h4><div class="rs-grid">'+inp('axTractor','Number of axles - Tractor',r.axTractor,'number')+inp('axTrailer','Number of axles - Trailer',r.axTrailer,'number')+sel('steerTire','Steer tire size (inches)',PM.TIRES,r.steerTire||'','Select size…')+'</div></div>'+
  '<div class="rs-sec"><h4>Notes</h4><div class="rs-grid">'+ta('notes','Notes',r.notes)+'</div></div>'+
  '<div class="rs-err" id="pm-err"></div></form>'};
 PM.bind=function(root,o){var f=root.querySelector('#pmform');var P={};(o.people||[]).forEach(function(p){P[p[0]]=p[1]});
  f.name.onchange=function(){f.title.value=P[f.name.value]||''};function jt(){var o=f.link.options[f.link.selectedIndex];var t=o&&o.value?o.text.split(' · ').slice(1).join(' · ')||o.text:'';f.jobTitle.value=t}f.link.addEventListener('change',jt);jt();
  function fill(r){Object.keys(r).forEach(function(k){if(f[k]&&f[k].tagName)f[k].value=r[k]})}
- return {demo:function(){var s=PM.sample();var j=f.link.value||(f.link.options[1]&&f.link.options[1].value);fill(s);f.link.value=j;jt();if(!f.unit.value)f.unit.value='T-335-03';if(!P[s.name]){f.name.selectedIndex=1}f.title.value=P[f.name.value]||''},
+ return {demo:function(){var s=PM.sample();var j=f.link.value||(f.link.options[1]&&f.link.options[1].value);fill(s);f.link.value=j;jt();if(!f.unit.value)f.unit.value='T-331-07';if(!P[s.name]){f.name.selectedIndex=1}f.title.value=P[f.name.value]||''},
  read:function(){var r={};['link','jobTitle','unit','name','title','reqDate','load','len','wid','hgt','ohf','ohr','axTractor','axTrailer','steerTire','notes'].forEach(function(k){r[k]=(f[k].value||'').trim()});
   var miss=[];if(!r.link)miss.push('Job');if(!r.unit)miss.push('Unit');if(!r.name)miss.push('Name');if(!r.reqDate)miss.push('Date requested');
   var e=root.querySelector('#pm-err');if(miss.length){e.textContent='Required: '+miss.join(', ');return null}
@@ -42,7 +42,7 @@ PM.docHTML=function(r,logo){return '<div style="font-family:Arial;color:#222;max
  sec('Linked to',row('Job',r.linkLabel)+row('Job title',r.jobTitle)+row('Unit',r.unitLabel))+
  sec('Requested by',row('Name',r.name)+row('Title',r.title)+row('Date requested',r.reqDate))+
  sec('Load',row('Load description',r.load)+row('Length',r.len)+row('Width',r.wid)+row('Height',r.hgt)+row('Front overhang',r.ohf)+row('Rear overhang',r.ohr))+
- sec('Axles & tires',row('Number of axles - Tractor',r.axTractor)+row('Number of axles - Trailer',r.axTrailer)+row('Steer tire size',r.steerTire))+
+ sec('Axles & Tires',row('Number of axles - Tractor',r.axTractor)+row('Number of axles - Trailer',r.axTrailer)+row('Steer tire size',r.steerTire))+
  sec('Notes',row('Notes',r.notes))+'</div>'};
 PM.mailText=function(r,to){return 'Permit Request '+r.id+' (PDF attached) emailed to '+to};
 window.PM=PM;

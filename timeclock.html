@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#F3011B"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="icon" href="data:,"><title>Rig Move Time Sheet | Tracker | Rig Runner</title><style>
+<!DOCTYPE html><html lang="en"><head><script src="seed.js?v=15"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#F3011B"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="icon" href="data:,"><title>Rig Move Time Sheet | Tracker | Rig Runner</title><style>
 :root{--red:#F3011B;--ink:#2A2A27;--red-dark:#c20016;--grey:#6b6b66;--line:#e2e2de;--bg:#f4f4f2;}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -479,8 +479,8 @@ var LOGO="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAAFbCAYAAAAJGvDvAADK
 var LOCK='<svg class="lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
 var USERS={op:{key:'op',name:'Marco Salinas',ini:'MS',emp:'10155',role:'Crane Operator',op:true,equip:'',eqNote:'',leased:false,term:'331 Jourdanton'},
  drv:{key:'drv',name:'Dale Whitaker',ini:'DW',emp:'10231',role:'Truck Driver',equip:'Truck T-1142 + Trailer TR-508',eqNote:'your assigned truck/trailer',leased:true,term:'308 Alice'}};
-var JOBS=[['24117','Rig 14'],['24121','Rig 7'],['24130','Rig 22']];
-var ASG={'24117':{'Crane':['C-301','C-304','C-309','C-312'],'Forklift':['F-210','F-214','F-222'],'Tandem':['TD-1236','TD-1241'],'Pole Truck':['PT-1219','PT-1224']},'24121':{'Crane':['C-315'],'Forklift':['F-227'],'Tandem':['TD-1250']},'24130':{'Crane':['C-318'],'Pole Truck':['PT-1230']}};
+var JOBS=[['214','Sample Rig 27'],['J-26-1184','Hartline 44'],['J-26-1188','Hartline 30']];
+var ASG={'214':{'Crane':['C-301','C-304','C-309','C-312'],'Forklift':['F-210','F-214','F-222'],'Tandem':['TD-1236','TD-1241'],'Pole Truck':['PT-1219','PT-1224']},'J-26-1188':{'Crane':['C-315'],'Forklift':['F-227'],'Tandem':['TD-1250']},'J-26-1184':{'Crane':['C-318'],'Pole Truck':['PT-1230']}};
 function eqSel(){var g=ASG[S.job];if(!S.job)return '<select id="eq" disabled><option value="">Select a job first</option></select>';
  return '<select id="eq"><option value="">Select equipment</option>'+Object.keys(g).map(function(t){return '<optgroup label="'+t+'">'+g[t].map(function(u){return '<option value="'+u+'"'+(u===S.eq?' selected':'')+'>'+u+' · '+t+'</option>'}).join('')+'</optgroup>'}).join('')+'</select><div class="hint" style="font-size:12px;color:#6b6b66;margin-top:4px">Only units dispatch assigned to this job. The unit is linked to you for today and records the same hours.</div>';}
 function eqOf(){return U.op?(S.eq||'—'):(window.LE!==false?U.equip:'Not clocked in');}
@@ -490,10 +490,10 @@ var U=USERS.op,S,step,loc=true,errs={},cur=null,mileEdit=false;
 var RECS={op:[],drv:[]};
 function D(dstr,h,m){var d=new Date(dstr+'T00:00');d.setHours(h,m);return d.getTime();}
 function seed(){
- RECS.op=[{id:'TS-26-08790',date:'2026-10-09',job:'24117',eq:'C-309',term:'308 Alice',cin:D('2026-10-09',6,0),cout:D('2026-10-09',16,30),lunch:true,perDiem:'Yes',status:'Approved',by:'T. Weaver (Dispatch) · Oct 10, 8:12 AM'},
-  {id:'TS-26-08752',date:'2026-10-08',job:'24117',eq:'C-301',term:'308 Alice',cin:D('2026-10-08',6,15),cout:D('2026-10-08',17,0),lunch:true,perDiem:'Yes',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:40 AM'}];
- RECS.drv=[{id:'TS-26-08801',date:'2026-10-09',job:'24117',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-09',5,45),cout:D('2026-10-09',16,45),lunch:true,perDiem:'No',odoIn:'184151',odoOut:'',status:'Mileage due'},
-  {id:'TS-26-08760',date:'2026-10-08',job:'24117',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-08',5,45),cout:D('2026-10-08',17,15),lunch:true,perDiem:'No',odoIn:'184090',odoOut:'184151',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:41 AM'}];
+ RECS.op=[{id:'TS-26-08790',date:'2026-10-09',job:'214',eq:'C-309',term:'308 Alice',cin:D('2026-10-09',6,0),cout:D('2026-10-09',16,30),lunch:true,perDiem:'Yes',status:'Approved',by:'T. Weaver (Dispatch) · Oct 10, 8:12 AM'},
+  {id:'TS-26-08752',date:'2026-10-08',job:'214',eq:'C-301',term:'308 Alice',cin:D('2026-10-08',6,15),cout:D('2026-10-08',17,0),lunch:true,perDiem:'Yes',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:40 AM'}];
+ RECS.drv=[{id:'TS-26-08801',date:'2026-10-09',job:'214',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-09',5,45),cout:D('2026-10-09',16,45),lunch:true,perDiem:'No',odoIn:'184151',odoOut:'',status:'Mileage due'},
+  {id:'TS-26-08760',date:'2026-10-08',job:'214',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-08',5,45),cout:D('2026-10-08',17,15),lunch:true,perDiem:'No',odoIn:'184090',odoOut:'184151',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:41 AM'}];
 }
 function blank(){return {date:today(),job:'',term:'308 Alice',cin:null,odoIn:'',lunch:false,cout:null,perDiem:'',approver:'',notes:'',sig:null};}
 function today(){var d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
@@ -535,13 +535,13 @@ function toAll(){var a;try{a=JSON.parse(localStorage.rrTimeOff||'null')}catch(e)
 function toPill(st){return '<span class="pill '+({Pending:'Pending',Approved:'Approved',Denied:'Corr'}[st])+'">'+st+'</span>';}
 V.to=function(){var mine=toAll().filter(function(r){return r.emp===toKey()});return '<div class="pbody">'+
  '<div class="small muted">'+U.name+' · #'+U.emp+' · '+U.term+'</div>'+
- fld('totype','Type',1,sel('totype',TOT,'','Select type'))+fld('tostart','Start date',1,'<input type="date" id="tostart">')+fld('toend','End date',1,'<input type="date" id="toend">')+fld('tonote','Note',0,'<textarea id="tonote" rows="2" placeholder="Optional"></textarea>')+
+ fld('totype','Type',1,sel('totype',TOT,'','Select type'))+fld('tostart','Start Date',1,'<input type="date" id="tostart">')+fld('toend','End date',1,'<input type="date" id="toend">')+fld('tonote','Note',0,'<textarea id="tonote" rows="2" placeholder="Optional"></textarea>')+
  '<div class="tip">Goes to management for approval. When approved, the days show on the office Daily Log right away.</div>'+
  '<div style="font-weight:800;margin:14px 0 6px">My requests</div>'+(mine.length?mine.slice().reverse().map(function(r){return '<div class="pcard"><div class="row"><b>'+r.type+'</b><span class="spacer"></span>'+toPill(r.status)+'</div><div class="small" style="margin-top:4px">'+fmtD(r.start).replace(/, \d{4}$/,'')+' – '+fmtD(r.end)+'</div><div class="small muted">'+r.id+(r.note?' · '+esc(r.note):'')+'</div></div>'}).join(''):'<div class="hint">No requests yet.</div>')+
  '</div>'+foot('<button class="btn ghost" id="tocancel">Cancel</button><button class="btn primary" id="tosend">Submit request</button>');};
 V[1]=function(){return '<div class="pbody">'+stepbar(1,'Job &amp; clock in')+
  '<div class="pcard" style="padding:10px 13px"><div class="row"><span class="avatar" style="width:34px;height:34px">'+U.ini+'</span><div><b>'+U.name+'</b> <span class="muted small">#'+U.emp+'</span><div class="small muted">'+U.role+' · home terminal '+U.term+'</div></div></div></div>'+
- fld('job','Rig Move / Job #',1,sel('job',JOBS,S.job,'Select an assigned job').replace('</select>','<option disabled>24135 · Rig 31 — Scheduled (not clockable)</option></select>')+'<div class="hint" style="font-size:12px;color:#666;margin-top:4px">Only In Progress jobs can be clocked into. Scheduled jobs must be marked In Progress by the office first.</div>')+
+ fld('job','Rig Move / Job #',1,sel('job',JOBS,S.job,'Select an assigned job').replace('</select>','<option disabled>J-26-1191 · Cobalt 19 — Scheduled (not clockable)</option></select>')+'<div class="hint" style="font-size:12px;color:#666;margin-top:4px">Only In Progress jobs can be clocked into. Scheduled jobs must be marked In Progress by the office first.</div>')+
  (U.op?fld('eq','Equipment you\'re running today',1,eqSel()):'')+
  fld('date','Date Worked',1,'<input type="date" id="date" value="'+S.date+'" max="'+today()+'">')+
  fld('term','Terminal',1,sel('term',TERMS,S.term,'Select terminal'))+(U.op?'':linked())+
@@ -606,7 +606,7 @@ function wire(){
  on('save','click',function(){read();localStorage.setItem(key(),JSON.stringify(S));toast('Draft saved · '+fmtT(Date.now()));});
  on('cancel','click',function(){if(confirm('Discard this time sheet?')){localStorage.removeItem(key());S=blank();go('mytime');}});
  on('lunch','click',function(){S.lunch=!S.lunch;this.classList.toggle('on',S.lunch);this.setAttribute('aria-checked',S.lunch);});
- on('demo','click',function(){read();var a=new Date(S.date+'T06:00').getTime();S.job=S.job||'24117';if(U.op&&!S.eq)S.eq='C-304';S.cin={t:a,g:{lat:'27.7524',lon:'-98.0697',acc:8}};S.cout={t:a+11.5*36e5,g:{lat:'27.7531',lon:'-98.0702',acc:6}};if(U.leased)S.odoIn='184226';S.lunch=true;errs={};render();toast('Sample times filled: 6:00 AM – 5:30 PM');});
+ on('demo','click',function(){read();var a=new Date(S.date+'T06:00').getTime();S.job=S.job||'214';if(U.op&&!S.eq)S.eq='C-304';S.cin={t:a,g:{lat:'27.7524',lon:'-98.0697',acc:8}};S.cout={t:a+11.5*36e5,g:{lat:'27.7531',lon:'-98.0702',acc:6}};if(U.leased)S.odoIn='184226';S.lunch=true;errs={};render();toast('Sample times filled: 6:00 AM – 5:30 PM');});
  document.querySelectorAll('[data-pd]').forEach(function(s){s.onclick=function(){read();S.perDiem=s.dataset.pd;delete errs.perDiem;render();};});
  on('job','change',function(){read();S.eq='';delete errs.job;render();});
  on('odoIn','input',function(){this.value=this.value.replace(/\D/g,'');});
