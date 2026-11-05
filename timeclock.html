@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><script src="seed.js?v=20"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#F3011B"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="icon" href="data:,"><title>Rig Move Time Sheet | Tracker | Rig Runner</title><style>
+<!DOCTYPE html><html lang="en"><head><script src="seed.js?v=21"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#F3011B"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="icon" href="data:,"><title>Rig Move Time Sheet | Tracker | Rig Runner</title><style>
 :root{--red:#F3011B;--ink:#2A2A27;--red-dark:#c20016;--grey:#6b6b66;--line:#e2e2de;--bg:#f4f4f2;}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -481,8 +481,9 @@ var USERS={op:{key:'op',name:'Marco Salinas',ini:'MS',emp:'10155',role:'Crane Op
  fork:{key:'fork',name:'Mia Fuentes',ini:'MF',emp:'10172',role:'Forklift Operator',equip:'',eqNote:'',leased:false,term:'331 Jourdanton'},
  tandem:{key:'tandem',name:'Luis Garza',ini:'LG',emp:'10188',role:'Tandem Operator',equip:'',eqNote:'',leased:false,term:'308 Alice'},
  pole:{key:'pole',name:'Sam Nunez',ini:'SN',emp:'10194',role:'Pole Truck Operator',equip:'',eqNote:'',leased:false,term:'331 Jourdanton'},
- drv:{key:'drv',name:'Dale Whitaker',ini:'DW',emp:'10231',role:'Truck Driver',equip:'Truck T-1142 + Trailer TR-508',eqNote:'your assigned truck/trailer',leased:true,term:'308 Alice'},
- swamp:{key:'swamp',name:'Luis Ortega',ini:'LO',emp:'10180',role:'Swamper',equip:'',eqNote:'',leased:false,term:'331 Jourdanton'}};
+ drv:{key:'drv',name:'Dale Whitaker',ini:'DW',emp:'10231',role:'Truck Driver',equip:'Truck T-1142 + Trailer TR-508',eqNote:'your assigned truck/trailer',leased:false,term:'308 Alice'},
+ swamp:{key:'swamp',name:'Luis Ortega',ini:'LO',emp:'10180',role:'Swamper',equip:'',eqNote:'',leased:false,term:'331 Jourdanton'},
+ push:{key:'push',name:'Wade Kessler',ini:'WK',emp:'10208',role:'Pusher',equip:'',eqNote:'',leased:true,term:'331 Jourdanton'}};
 function needsEqPick(role){role=String(role||'');return /crane\s*operator|forklift\s*operator|tandem\s*operator|(pole|pull)\s*truck\s*operator/i.test(role)}
 function isDriver(role){role=String(role||'');return /truck\s*driver/i.test(role)||/^driver$/i.test(role)}
 function eqType(role){role=String(role||'');if(/crane/i.test(role))return 'Crane';if(/forklift/i.test(role))return 'Forklift';if(/tandem/i.test(role))return 'Tandem';if(/pole\s*truck|pull\s*truck/i.test(role))return 'Pole Truck';return null}
@@ -496,13 +497,15 @@ function demoEq(){var g=ASG[S.job||'214'],typ=eqType(U.role);return (typ&&g&&g[t
 var TERMS=['308 Alice','331 Jourdanton','335 Odessa','346 Kilgore'];
 var APPROVERS=['Ray Delgado — Truck Pusher','Sam Ortega — Truck Pusher','Field Safety (sample)'];
 var U=USERS.op,S,step,loc=true,errs={},cur=null,mileEdit=false;
-var RECS={op:[],fork:[],tandem:[],pole:[],drv:[],swamp:[]};
+var RECS={op:[],fork:[],tandem:[],pole:[],drv:[],swamp:[],push:[]};
 function D(dstr,h,m){var d=new Date(dstr+'T00:00');d.setHours(h,m);return d.getTime();}
 function seed(){
  RECS.op=[{id:'TS-26-08790',date:'2026-10-09',job:'214',eq:'C-309',term:'308 Alice',cin:D('2026-10-09',6,0),cout:D('2026-10-09',16,30),lunch:true,perDiem:'Yes',status:'Approved',by:'T. Weaver (Dispatch) · Oct 10, 8:12 AM'},
   {id:'TS-26-08752',date:'2026-10-08',job:'214',eq:'C-301',term:'308 Alice',cin:D('2026-10-08',6,15),cout:D('2026-10-08',17,0),lunch:true,perDiem:'Yes',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:40 AM'}];
- RECS.drv=[{id:'TS-26-08801',date:'2026-10-09',job:'214',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-09',5,45),cout:D('2026-10-09',16,45),lunch:true,perDiem:'No',odoIn:'184151',odoOut:'',status:'Mileage due'},
-  {id:'TS-26-08760',date:'2026-10-08',job:'214',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-08',5,45),cout:D('2026-10-08',17,15),lunch:true,perDiem:'No',odoIn:'184090',odoOut:'184151',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:41 AM'}];
+ RECS.drv=[{id:'TS-26-08801',date:'2026-10-09',job:'214',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-09',5,45),cout:D('2026-10-09',16,45),lunch:true,perDiem:'No',status:'Approved',by:'T. Weaver (Dispatch) · Oct 10, 8:12 AM'},
+  {id:'TS-26-08760',date:'2026-10-08',job:'214',eq:'Truck T-1142 + Trailer TR-508',term:'308 Alice',cin:D('2026-10-08',5,45),cout:D('2026-10-08',17,15),lunch:true,perDiem:'No',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:41 AM'}];
+ RECS.push=[{id:'TS-26-08812',date:'2026-10-09',job:'214',eq:'—',term:'331 Jourdanton',cin:D('2026-10-09',5,30),cout:D('2026-10-09',16,30),lunch:true,perDiem:'Yes',odoIn:'184151',odoOut:'',status:'Mileage due'},
+  {id:'TS-26-08771',date:'2026-10-08',job:'214',eq:'—',term:'331 Jourdanton',cin:D('2026-10-08',5,30),cout:D('2026-10-08',17,0),lunch:true,perDiem:'Yes',odoIn:'184090',odoOut:'184151',status:'Approved',by:'T. Weaver (Management) · Oct 9, 7:41 AM'}];
 }
 function blank(){return {date:today(),job:'',term:'308 Alice',cin:null,odoIn:'',lunch:false,cout:null,perDiem:'',approver:'',notes:'',sig:null};}
 function today(){var d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
@@ -521,7 +524,7 @@ function T(x){return x&&x.t?x.t:x}
 function top(){var back=(step===1||step==='rec'||step==='to')?'mytime':(step===2||step===3)?step-1:(step==='corr'?'rec':null);
  $('#top').innerHTML='<div class="ptop">'+(back!=null?'<a class="pback" id="tb">‹</a><span class="ptitle">'+({1:'Rig Move Time Sheet',2:'Rig Move Time Sheet',3:'Rig Move Time Sheet',rec:'Time Record',corr:'Request Correction',to:'Request Time Off'}[step])+'</span>':'<a class="pback" id="tcback" href="index.html#home">‹</a><span class="ptitle">Time Clock</span><span class="brand" style="display:none"><img src="'+LOGO+'" alt="Rig Runner"><span class="divider"></span><span class="appname">Tracker</span></span>')+'<span class="spacer"></span>'+'<a class="pback" id="apphome" href="index.html#home" title="App home" style="width:auto;padding:0 10px;font-size:13px;text-decoration:none">⌂ Home</a>'+'</div>';
  var b=$('#tb');if(b)b.onclick=function(){go(back)};}
-function demobar(){var users=[['op','Marco Salinas','Crane Operator'],['fork','Mia Fuentes','Forklift Operator'],['tandem','Luis Garza','Tandem Operator'],['pole','Sam Nunez','Pole Truck Operator'],['drv','Dale Whitaker','Truck Driver'],['swamp','Luis Ortega','Swamper']];
+function demobar(){var users=[['op','Marco Salinas','Crane Operator'],['fork','Mia Fuentes','Forklift Operator'],['tandem','Luis Garza','Tandem Operator'],['pole','Sam Nunez','Pole Truck Operator'],['drv','Dale Whitaker','Truck Driver'],['swamp','Luis Ortega','Swamper'],['push','Wade Kessler','Pusher']];
  return '<div class="demobar"><div class="k">Demo user</div><div class="seg">'+users.map(function(u){return '<a data-user="'+u[0]+'" class="'+(U.key===u[0]?'active':'')+'">'+u[1]+'<br><small>'+u[2]+'</small></a>'}).join('')+'</div></div>';}
 function fld(id,label,req,inner){return '<div class="pfield'+(errs[id]?' invalid':'')+'" id="f-'+id+'"><label>'+label+(req?'<span class="req">*</span>':'')+'</label>'+inner+'<div class="err">'+(errs[id]||'')+'</div></div>';}
 function sel(id,opts,val,ph){return '<select id="'+id+'">'+(ph?'<option value="">'+ph+'</option>':'')+opts.map(function(o){var v=Array.isArray(o)?o[0]:o,t=Array.isArray(o)?o[0]+' · '+o[1]:o;return '<option value="'+esc(v)+'"'+(v===val?' selected':'')+'>'+esc(t)+'</option>'}).join('')+'</select>';}
@@ -530,7 +533,7 @@ function stepbar(n,l){return '<div class="step"><span class="dots">'+[1,2,3].map
 function foot(h){return '<div class="pfoot'+((h.match(/class="btn/g)||[]).length==3?' three':'')+'">'+h+'</div>';}
 function driverLink(){return '<div class="tip" id="autolink">Automatically linked to your assigned equipment: <b>'+esc(U.equip)+'</b></div>';}
 function stat(s){return '<span class="pill '+({'Pending approval':'Pending','Approved':'Approved','Mileage due':'Due','Correction requested':'Corr'}[s])+'">'+s+'</span>';}
-function mileBox(r){var lock=new Date(r.date+'T23:59');var open=Date.now()<=lock.getTime()||r.id==='TS-26-08801';
+function mileBox(r){var lock=new Date(r.date+'T23:59');var open=Date.now()<=lock.getTime()||r.id==='TS-26-08812';
  return '<div class="mile" id="milebox"><div class="h">Ending mileage — editable until 11:59 PM</div><div class="small" style="margin-bottom:8px">Starting odometer <b>'+r.odoIn+'</b> '+LOCK+' · only the ending odometer can be changed; everything else is locked.</div>'+
  (r.odoOut&&!mileEdit?'<div class="row"><b style="font-size:17px">'+r.odoOut+'</b><span class="muted small">· '+(r.odoOut-r.odoIn)+' mi</span><span class="spacer"></span>'+(open?'<button class="btn" id="mileedit">Edit</button>':'')+'</div>':
  '<div class="row"><input id="odoOut" inputmode="numeric" placeholder="Ending odometer" value="'+esc(r.odoOut)+'"><button class="btn primary" id="milesave">Add ending mileage</button></div><div class="err" id="mileerr" style="display:block"></div>')+'</div>';}
