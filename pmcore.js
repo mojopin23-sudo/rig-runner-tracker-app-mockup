@@ -3,10 +3,10 @@
 var KEY='rrPermits2';
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 var PM={KEY:KEY,esc:esc};
-PM.UNITS=[["T-308-14","2019 Kenworth","308"],["C-308-02","2016 Grove","308"],["T-331-07","2021 Peterbilt","331"],["T-331-11","2018 Mack","331"],["T-335-03","2020 Kenworth","335"],["C-335-01","2017 Link-Belt","335"],["T-346-05","2022 Peterbilt","346"],["T-346-09","2015 Freightliner","346"],["F-308-04","2020 Sellick","308"],["P-331-02","2019 Kenworth","331"],["W-335-06","2018 Peterbilt","335"],["C-346-01","2021 Grove","346"]];
+PM.UNITS=[["T-308-14","2019 Kenworth","308"],["C-308-02","2016 Grove","308"],["T-331-07","2013 WESTERNSTAR","331"],["T-331-11","2018 Mack","331"],["T-335-03","2020 Kenworth","335"],["C-335-01","2017 Link-Belt","335"],["T-346-05","2022 Peterbilt","346"],["T-346-09","2015 Freightliner","346"],["F-308-04","2020 Sellick","308"],["P-331-02","2019 Kenworth","331"],["W-335-06","2018 Peterbilt","335"],["C-346-01","2021 Grove","346"]];
 PM.TERMS={'308':'308 Alice','331':'331 Jourdanton','335':'335 Odessa','346':'346 Kilgore'};
 PM.TIRES=[];for(var t=11;t<=17;t+=0.5)PM.TIRES.push(t+' in');
-PM.sample=function(){return {id:'PR-26-2001',link:'job:214',linkLabel:'Job #214 · Sample Rig 27',jobTitle:'Sample Rig 27',unit:'T-331-07',unitLabel:'T-331-07 · 2021 Peterbilt · 331 Jourdanton',name:'Dale Pruitt',title:'Driver',reqDate:'2026-10-27',load:'Substructure box',len:'68 ft',wid:'14 ft 6 in',hgt:'15 ft 2 in',ohf:'0 ft',ohr:'6 ft',axTractor:'3',axTrailer:'3',steerTire:'12.5 in',notes:'Daylight travel only.',date:'2026-10-27'}};
+PM.sample=function(){return {id:'PR-26-2001',link:'job:214',linkLabel:'Job #214 · Sample Rig 27',jobTitle:'Sample Rig 27',unit:'T-331-07',unitLabel:'T-331-07 · 2013 WESTERNSTAR · 331 Jourdanton',name:'Dale Pruitt',title:'Driver',reqDate:'2026-10-27',load:'Substructure box',len:'68 ft',wid:'14 ft 6 in',hgt:'15 ft 2 in',ohf:'0 ft',ohr:'6 ft',axTractor:'3',axTrailer:'3',steerTire:'12.5 in',notes:'Daylight travel only.',date:'2026-10-27'}};
 PM.all=function(){var a;try{a=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}if(!a){a=[PM.sample()];localStorage.setItem(KEY,JSON.stringify(a))}return a};
 PM.save=function(a){localStorage.setItem(KEY,JSON.stringify(a))};
 PM.get=function(id){return PM.all().find(function(x){return x.id===id})};
